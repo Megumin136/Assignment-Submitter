@@ -74,15 +74,15 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "自动构建版 - ${{ github.run_number }}"
+          name: "作业提交器 - ${{ github.run_number }}"
           tag_name: "build-${{ github.run_number }}"
           body: |
             ✅ 自动构建完成于：${{ github.event.head_commit.timestamp }}
             👤 提交者：${{ github.actor }}
             📦 包含以下平台：
-            - Windows (.exe，无黑窗版本)
-            - macOS
             - Linux
+            - Windows
+            - macOS
           files: release_files/**/*
           draft: false
           prerelease: false
