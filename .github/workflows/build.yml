@@ -3,10 +3,10 @@ name: Auto Build & Release on Push
 on:
   push:
     branches:
-      - master  # 只要 push 到 master 分支就触发
+      - master
 
 permissions:
-  contents: write   # ✅ 关键：允许创建 release
+  contents: write
   id-token: write
 
 jobs:
@@ -32,9 +32,8 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller "Dumbass Submitter.py" --onefile --name "DumbassSubmitter"
+          pyinstaller "Dumbass Submitter.py" --onefile --noconsole --name "DumbassSubmitter"
 
-      # ✅ 重命名产物
       - name: Rename output (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
@@ -64,7 +63,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # ✅ release 任务也显式声明权限
+      contents: write
 
     steps:
       - name: Download all build artifacts
@@ -81,7 +80,7 @@ jobs:
             ✅ 自动构建完成于：${{ github.event.head_commit.timestamp }}
             👤 提交者：${{ github.actor }}
             📦 包含以下平台：
-            - Windows (.exe)
+            - Windows (.exe，无黑窗版本)
             - macOS
             - Linux
           files: release_files/**/*
