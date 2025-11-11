@@ -30,10 +30,30 @@ jobs:
         run: |
           pip install pyinstaller requests
 
-      - name: Build executable
+      # -----------------------------
+      # 🔧 Build executable with icons and hide console
+      # -----------------------------
+      - name: Build executable (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
         run: |
-          pyinstaller "Dumbass Submitter.py" --onefile --noconsole --name "DumbassSubmitter"
+          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-windows.ico --name "DumbassSubmitter"
 
+      - name: Build executable (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-macos.icns --name "DumbassSubmitter"
+
+      - name: Build executable (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-linux.png --name "DumbassSubmitter"
+
+      # -----------------------------
+      # 🚚 Rename outputs
+      # -----------------------------
       - name: Rename output (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
@@ -52,12 +72,18 @@ jobs:
           mkdir dist_output
           move dist\DumbassSubmitter.exe dist_output\DumbassSubmitter-windows.exe
 
+      # -----------------------------
+      # 📦 Upload artifacts
+      # -----------------------------
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: DumbassSubmitter-${{ matrix.os }}
           path: dist_output/
 
+  # -----------------------------
+  # 🚀 Release
+  # -----------------------------
   release:
     name: Create Release
     needs: build
@@ -74,12 +100,12 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "作业提交器(DumbassSubmitter) - ${{ github.run_number }}"
+          name: "作业提交器 (DumbassSubmitter) - ${{ github.run_number }}"
           tag_name: "build-${{ github.run_number }}"
           body: |
-            ✅ 自动构建完成于：${{ github.event.head_commit.timestamp }}
-            👤 提交者：${{ github.actor }}
-            📦 包含以下平台：
+            ✅ 自动构建完成于 Build completed on：${{ github.event.head_commit.timestamp }}
+            👤 提交者 Committed by：${{ github.actor }}
+            📦 包含以下平台 Includes the following platforms：
             - Linux
             - macOS
             - Windows
