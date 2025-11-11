@@ -165,4 +165,3 @@ tk.Button(frame_submit, text="Get API Key / 获取 API 密钥", command=api_key_
 tk.Label(root, text="Note / 注意: Do NOT share your password / 请勿泄露密码", fg="red").grid(row=2, column=0, pady=5)
 
 root.mainloop()
-#11
