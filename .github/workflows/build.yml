@@ -3,7 +3,7 @@ name: Auto Build & Release on Push
 on:
   push:
     branches:
-      - master   # 当你 push 到 master 分支时自动触发
+      - master   # 只要 push 到 master 分支就触发
 
 jobs:
   build:
@@ -30,17 +30,24 @@ jobs:
         run: |
           pyinstaller "Dumbass Submitter.py" --onefile --name "DumbassSubmitter"
 
-      - name: Rename output
+      # 🧩 根据操作系统不同改名并收集输出
+      - name: Rename output (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           mkdir -p dist_output
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             mv dist/DumbassSubmitter dist_output/DumbassSubmitter-linux
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            mv dist/DumbassSubmitter dist_output/DumbassSubmitter-macos
           else
-            move dist\DumbassSubmitter.exe dist_output\DumbassSubmitter-windows.exe
+            mv dist/DumbassSubmitter dist_output/DumbassSubmitter-macos
           fi
         shell: bash
+
+      - name: Rename output (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          mkdir dist_output
+          move dist\DumbassSubmitter.exe dist_output\DumbassSubmitter-windows.exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -64,6 +71,7 @@ jobs:
         with:
           name: "Auto Release ${{ github.run_number }}"
           tag_name: "build-${{ github.run_number }}"
+          body: "自动构建于 ${{ github.event.head_commit.timestamp }} by ${{ github.actor }}"
           files: release_files/**/*
           draft: false
           prerelease: false
