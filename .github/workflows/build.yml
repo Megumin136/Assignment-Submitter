@@ -37,19 +37,19 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: |
-          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-windows.ico --name "DumbassSubmitter"
+          pyinstaller "AssignmentSubmitter.py" --onefile --windowed --icon=icon/icon-windows.ico --name "DumbassSubmitter"
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-macos.icns --name "DumbassSubmitter"
+          pyinstaller "AssignmentSubmitter.py" --onefile --windowed --icon=icon/icon-macos.icns --name "DumbassSubmitter"
 
       - name: Build executable (Linux)
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          pyinstaller "Dumbass Submitter.py" --onefile --windowed --icon=icon/icon-linux.png --name "DumbassSubmitter"
+          pyinstaller "AssignmentSubmitter.py" --onefile --windowed --icon=icon/icon-linux.png --name "DumbassSubmitter"
 
       # -----------------------------
       # 🚚 Rename outputs
@@ -59,9 +59,9 @@ jobs:
         run: |
           mkdir -p dist_output
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            mv dist/DumbassSubmitter dist_output/DumbassSubmitter-linux
+            mv dist/AssignmentSubmitter dist_output/AssignmentSubmitter-linux
           else
-            mv dist/DumbassSubmitter dist_output/DumbassSubmitter-macos
+            mv dist/AssignmentSubmitter dist_output/AssignmentSubmitter-macos
           fi
         shell: bash
 
@@ -70,7 +70,7 @@ jobs:
         shell: cmd
         run: |
           mkdir dist_output
-          move dist\DumbassSubmitter.exe dist_output\DumbassSubmitter-windows.exe
+          move dist\AssignmentSubmitter.exe dist_output\AssignmentSubmitter-windows.exe
 
       # -----------------------------
       # 📦 Upload artifacts
@@ -78,7 +78,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DumbassSubmitter-${{ matrix.os }}
+          name: AssignmentSubmitter-${{ matrix.os }}
           path: dist_output/
 
   # -----------------------------
@@ -100,7 +100,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "作业提交器 (DumbassSubmitter) - ${{ github.run_number }}"
+          name: "作业提交器 (AssignmentSubmitter) - ${{ github.run_number }}"
           tag_name: "build-${{ github.run_number }}"
           body: |
             ✅ 自动构建完成于 Build completed on：${{ github.event.head_commit.timestamp }}
